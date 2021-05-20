@@ -1,6 +1,6 @@
 import json
 import requests
-from datetime import date
+from datetime import date, datetime
 from collections import OrderedDict
 from threading import Timer
 form email_alert import *
@@ -10,6 +10,7 @@ def extract_data():
     today = date.today()
     date_today = today.strftime("%d-%m-%Y")
     date_today = date_today.strip()
+    time_curr = datetime.now().strftime("%H:%M:%S")
     pincode = "248001" #example pincode
     url = f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode={pincode}&date={date_today}"
     headers = {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"}  #can add more headers but user-agent is compulsory 
@@ -46,6 +47,8 @@ def extract_data():
     if len(output) != 0:
         emailalert(pincode, output)
         return
+    else:
+        print(f"Will retry in a minute. Last tried: {time_curr}")
     Timer(60, extract_data).start() #will check every minute when script is runnning
 
 extract_data()
