@@ -1,6 +1,5 @@
 import json
 import requests
-from bs4 import BeautifulSoup
 from datetime import date
 from collections import OrderedDict
 from threading import Timer
@@ -18,8 +17,7 @@ def extract_data():
     response = requests.get(url, headers= headers)
 
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    siteJson = json.loads(soup.text)
+    siteJson = json.loads(response.text)
     centers = siteJson['centers']
 
     for i in centers:
@@ -48,6 +46,6 @@ def extract_data():
     if len(output) != 0:
         emailalert(pincode, output)
         return
-    Timer(3600, extract_data).start() #will check every hour when script is runnning
+    Timer(60, extract_data).start() #will check every minute when script is runnning
 
 extract_data()
